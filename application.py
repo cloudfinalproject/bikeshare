@@ -6,17 +6,18 @@ from flask import Flask, request, render_template, g, redirect, Response, sessio
 from server.config import *
 from server.data_access.user_data_access import *
 from server.data_access.bike_data_access import *
+from server.data_access.user_msg_access import *
 
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
-app = Flask(__name__, template_folder=tmpl_dir)
+application = api = Flask(__name__, template_folder=tmpl_dir)
 
 # set the secret key.  keep this really secret:
-app.secret_key = secret_key
+application.secret_key = secret_key
 DATABASEURI = database_uri
 engine = create_engine(DATABASEURI)
 
-@app.before_request
+@application.before_request
 def before_request():
     """
     This function is run at the beginning of every web request
@@ -34,7 +35,7 @@ def before_request():
         import traceback; traceback.print_exc()
         g.conn = None
 
-@app.teardown_request
+@application.teardown_request
 def teardown_request(exception):
     """
     At the end of the web request, this makes sure to close the database connection.
@@ -46,15 +47,15 @@ def teardown_request(exception):
         pass
 
 
-@app.route('/login')
+@application.route('/login')
 def login():  # test view
     return render_template("login.html")
 
-@app.route('/view/register')
+@application.route('/view/register')
 def reg():
     return render_template('register.html')
 
-@app.route('/userLogin', methods=['POST'])
+@application.route('/userLogin', methods=['POST'])
 def userLogin():
     username = request.form['username']
     password = request.form['password']
@@ -71,7 +72,7 @@ def userLogin():
 
     return jsonify(output)
 
-@app.route('/register', methods=['POST'])
+@application.route('/register', methods=['POST'])
 def register():
     username = request.form['username']
     password = request.form['password']
@@ -83,7 +84,7 @@ def register():
 
     return jsonify(output)
 
-@app.route('/getAllBikes')
+@application.route('/getAllBikes')
 def get_all_bikes():
     if not session or 'uid' not in session:
         return abort(403)
@@ -93,16 +94,16 @@ def get_all_bikes():
 
         return jsonify(output)
 
-@app.route('/view/sendMsg')
-def reg():
+@application.route('/view/sendMsg')
+def view_send_msg():
     return render_template('sendMsg.html')
 
-@app.route('/view/showMsg')
-def reg():
+@application.route('/view/showMsg')
+def view_show_msg():
     return render_template('showMsg.html')
 
 
-@app.route('/sendMsg', methods=['POST'])
+@application.route('/sendMsg', methods=['POST'])
 def sendMsg():
     uid1 = session['uid']
     uid2 = request.form['toWhom']
@@ -115,7 +116,7 @@ def sendMsg():
 
 
 
-@app.route('/showMsg', methods=['REQUEST'])
+@application.route('/showMsg', methods=['REQUEST'])
 def showMsg():
     uid = session['uid']
 
@@ -150,5 +151,5 @@ if __name__ == "__main__":
     #     app.run(host=HOST, port=PORT, debug=True, threaded=threaded)
     #
     # run()
-    app.debug = True
-    app.run()
+    application.debug = True
+    application.run()
