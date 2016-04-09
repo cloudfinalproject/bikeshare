@@ -2,9 +2,10 @@
 
 import os
 from sqlalchemy import *
-from flask import Flask, request, render_template, g, redirect, Response, session, jsonify
+from flask import Flask, request, render_template, g, redirect, Response, session, jsonify, abort
 from server.config import *
 from server.data_access.user_data_access import *
+from server.data_access.bike_data_access import *
 
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -82,6 +83,16 @@ def register():
 
     return jsonify(output)
 
+@app.route('/getAllBikes')
+def get_all_bikes():
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        bda = BikeDataAccess(g.conn)
+        output = bda.get_bikes_by_user_id(session['uid'])
+
+        return jsonify(output)
+
 @app.route('/view/sendMsg')
 def reg():
     return render_template('sendMsg.html')
@@ -96,7 +107,7 @@ def sendMsg():
     uid1 = session['uid']
     uid2 = request.form['toWhom']
     message = request.form['message']
-    
+
     uma = UserMsgAccess(g.conn)
     output = uma.sendMsg(uid1, uid2, message)
 
@@ -107,8 +118,8 @@ def sendMsg():
 @app.route('/showMsg', methods=['REQUEST'])
 def showMsg():
     uid = session['uid']
-    
-    
+
+
     uma = UserMsgAccess(g.conn)
     output = uma.showMsg(uid)
 
