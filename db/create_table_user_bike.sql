@@ -1,4 +1,4 @@
-CREATE TABLE user
+CREATE TABLE users
   (uid SERIAL,
    username VARCHAR(25) NOT NULL,
    password VARCHAR(25) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE user
    UNIQUE(email)
   );
 
-create table bike
+create table bikes
   (
     bid serial,
     uid integer not null,
@@ -23,5 +23,5 @@ create table bike
     details text,
 
     primary key(bid),
-    foreign key(uid) references user
+    foreign key(uid) references users
   )
