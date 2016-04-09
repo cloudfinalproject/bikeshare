@@ -82,6 +82,38 @@ def register():
 
     return jsonify(output)
 
+@app.route('/view/sendMsg')
+def reg():
+    return render_template('sendMsg.html')
+
+@app.route('/view/showMsg')
+def reg():
+    return render_template('showMsg.html')
+
+
+@app.route('/sendMsg', methods=['POST'])
+def sendMsg():
+    uid1 = session['uid']
+    uid2 = request.form['toWhom']
+    message = request.form['message']
+    
+    uma = UserMsgAccess(g.conn)
+    output = uma.sendMsg(uid1, uid2, message)
+
+    return jsonify(output)
+
+
+
+@app.route('/showMsg', methods=['REQUEST'])
+def showMsg():
+    uid = session['uid']
+    
+    
+    uma = UserMsgAccess(g.conn)
+    output = uma.showMsg(uid)
+
+    return jsonify(output)
+
 
 if __name__ == "__main__":
 
