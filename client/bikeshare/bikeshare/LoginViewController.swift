@@ -8,6 +8,7 @@
 
 import UIKit
 
+
 class LoginViewController: UIViewController {
 
 
@@ -46,6 +47,47 @@ class LoginViewController: UIViewController {
             self.presentViewController(actionSheetController, animated: true, completion: nil)
 
         }else{
+            let request = NSMutableURLRequest(URL: NSURL(string: serverDomain + "/userLogin")!)
+            request.HTTPMethod = "POST"
+            let payload = "username=\(username)&password=\(password)"
+            request.HTTPBody = payload.dataUsingEncoding(NSUTF8StringEncoding)
+            let session = NSURLSession.sharedSession()
+
+            let task = session.dataTaskWithRequest(request, completionHandler: {data, response, error -> Void in
+                print("Response: \(response)")
+                let strData = NSString(data: (data)!, encoding: NSUTF8StringEncoding)
+                print("Body: \(strData)")
+
+                if let httpResponse = response as? NSHTTPURLResponse {
+                    if(httpResponse.statusCode == 200){
+                        //sign in successfully
+                        NSOperationQueue.mainQueue().addOperationWithBlock {
+                            let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+                            prefs.setObject(username, forKey: "USERNAME")
+                            prefs.setBool(true, forKey: "ISLOGGEDIN")
+                            prefs.synchronize()
+                            self.dismissViewControllerAnimated(true, completion: nil)
+                        }
+
+                    }else{
+                        NSOperationQueue.mainQueue().addOperationWithBlock{
+                            //Create the AlertController
+                            let actionSheetController: UIAlertController = UIAlertController(title: "Login failed", message: "Login failed. Please input valid username or password", preferredStyle: .Alert)
+                            //Create and add the Cancel action
+                            let cancelAction: UIAlertAction = UIAlertAction(title: "OK", style: .Cancel) { action -> Void in }
+                            actionSheetController.addAction(cancelAction)
+                            //Present the AlertController
+                            self.presentViewController(actionSheetController, animated: true, completion: nil)
+                        }
+                    }
+                } else {
+                    assertionFailure("unexpected response")
+                }
+                
+                
+            })
+            task.resume()
+
 
         }
 

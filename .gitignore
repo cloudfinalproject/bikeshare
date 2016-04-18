@@ -46,3 +46,5 @@ server/config.py
 !.elasticbeanstalk/*.global.yml
 
 client/bikeshare/Pods/*
+
+*.pyc
