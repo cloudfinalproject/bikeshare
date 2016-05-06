@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		456834C5B8AFAECC3F17503E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D35D02F31B112E7A2C32BA37 /* libPods.a */; };
+		E0697B1D1CDC3B8200FFEEEA /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B1C1CDC3B8200FFEEEA /* DashboardViewController.swift */; };
+		E0697B1F1CDC3B9300FFEEEA /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B1E1CDC3B9300FFEEEA /* MessagesViewController.swift */; };
+		E0697B211CDC3BA200FFEEEA /* BikesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */; };
+		E0697B231CDC3BAE00FFEEEA /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B221CDC3BAE00FFEEEA /* ProfileViewController.swift */; };
 		E0A142D51CBD47C400C5AED7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A142D41CBD47C400C5AED7 /* AppDelegate.swift */; };
 		E0A142D71CBD47C400C5AED7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A142D61CBD47C400C5AED7 /* ViewController.swift */; };
 		E0A142DA1CBD47C400C5AED7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0A142D81CBD47C400C5AED7 /* Main.storyboard */; };
@@ -33,6 +37,10 @@
 		582E3FE7CCFCEE6EA69EB512 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8D8B0574F5FFB9686D77A9D5 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D35D02F31B112E7A2C32BA37 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		E0697B1C1CDC3B8200FFEEEA /* DashboardViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DashboardViewController.swift; sourceTree = "<group>"; };
+		E0697B1E1CDC3B9300FFEEEA /* MessagesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessagesViewController.swift; sourceTree = "<group>"; };
+		E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BikesViewController.swift; sourceTree = "<group>"; };
+		E0697B221CDC3BAE00FFEEEA /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		E0A142D11CBD47C400C5AED7 /* bikeshare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bikeshare.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A142D41CBD47C400C5AED7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0A142D61CBD47C400C5AED7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -116,6 +124,10 @@
 				E0A142E01CBD47C400C5AED7 /* Info.plist */,
 				E0BFE4451CC2C4C100F803D4 /* LoginViewController.swift */,
 				E0E74FC31CC2CD48001B88E1 /* SignUpViewController.swift */,
+				E0697B1C1CDC3B8200FFEEEA /* DashboardViewController.swift */,
+				E0697B1E1CDC3B9300FFEEEA /* MessagesViewController.swift */,
+				E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */,
+				E0697B221CDC3BAE00FFEEEA /* ProfileViewController.swift */,
 			);
 			path = bikeshare;
 			sourceTree = "<group>";
@@ -284,9 +296,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0697B1F1CDC3B9300FFEEEA /* MessagesViewController.swift in Sources */,
 				E0BFE4461CC2C4C100F803D4 /* LoginViewController.swift in Sources */,
 				E0A142D71CBD47C400C5AED7 /* ViewController.swift in Sources */,
+				E0697B211CDC3BA200FFEEEA /* BikesViewController.swift in Sources */,
+				E0697B1D1CDC3B8200FFEEEA /* DashboardViewController.swift in Sources */,
 				E0E74FC41CC2CD48001B88E1 /* SignUpViewController.swift in Sources */,
+				E0697B231CDC3BAE00FFEEEA /* ProfileViewController.swift in Sources */,
 				E0A142D51CBD47C400C5AED7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -14,29 +14,40 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome to bikeshare" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="0eR-2m-17N">
-                                <rect key="frame" x="102" y="151" width="170" height="21"/>
+                                <rect key="frame" x="102" y="71" width="170" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="343-Vm-w0I">
-                                <rect key="frame" x="58" y="215" width="259" height="21"/>
+                                <rect key="frame" x="58" y="100" width="259" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ZhD-p0-su9">
-                                <rect key="frame" x="161" y="582" width="52" height="30"/>
+                                <rect key="frame" x="303" y="66" width="52" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Log out"/>
                                 <connections>
                                     <action selector="logoutTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Cqn-hU-HRk"/>
                                 </connections>
                             </button>
+                            <tabBar contentMode="scaleToFill" id="ocP-Gf-j09">
+                                <rect key="frame" x="0.0" y="618" width="375" height="49"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <items>
+                                    <tabBarItem title="Dashboard" id="Ozt-qb-zG8"/>
+                                    <tabBarItem title="Messages" id="6sm-2E-nFS"/>
+                                    <tabBarItem title="Bikes" id="W4j-Yk-w4F"/>
+                                    <tabBarItem title="Profile" id="Fr1-xx-ZWw"/>
+                                </items>
+                            </tabBar>
                             <view contentMode="scaleToFill" id="7tx-ct-SKz" customClass="GMSMapView">
-                                <rect key="frame" x="67" y="278" width="240" height="266"/>
+                                <rect key="frame" x="0.0" y="178" width="375" height="440"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
@@ -46,13 +57,80 @@
                     <navigationItem key="navigationItem" title="HOME" id="l6J-4E-T8v"/>
                     <connections>
                         <outlet property="gmsMapView" destination="7tx-ct-SKz" id="N37-Kc-2pP"/>
+                        <outlet property="tabBar" destination="ocP-Gf-j09" id="Tgj-FJ-rQp"/>
                         <outlet property="usernameLabel" destination="343-Vm-w0I" id="9zr-1b-i6W"/>
                         <segue destination="VTn-gm-PZo" kind="modal" identifier="goto_login" id="eSb-Mg-Dv4"/>
+                        <segue destination="d8L-eJ-mbT" kind="push" identifier="goto_dashboard" id="BtV-QP-Tln"/>
+                        <segue destination="r7U-ME-Xgr" kind="push" identifier="goto_bikes" id="SLG-ow-Pp6"/>
+                        <segue destination="xW5-gA-VGf" kind="push" identifier="goto_profile" id="3Dy-yr-stL"/>
+                        <segue destination="2ZN-4F-Fnm" kind="push" identifier="goto_messages" id="xB9-rw-mLc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="611.5" y="-380.5"/>
+        </scene>
+        <!--Dashboard-->
+        <scene sceneID="ssW-7i-IvE">
+            <objects>
+                <viewController id="d8L-eJ-mbT" customClass="DashboardViewController" customModule="bikeshare" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="vwk-EO-PvM">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Dashboard" id="VPP-aT-vd4"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6cB-c1-8dG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-6.5" y="468.5"/>
+        </scene>
+        <!--Messages-->
+        <scene sceneID="ktS-rB-nXj">
+            <objects>
+                <viewController id="2ZN-4F-Fnm" customClass="MessagesViewController" customModule="bikeshare" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="RkY-qq-fS5">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Messages" id="IqX-Ds-MBS"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xbb-lr-zvf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="489" y="783"/>
+        </scene>
+        <!--Bikes-->
+        <scene sceneID="X9w-cs-KwV">
+            <objects>
+                <viewController id="r7U-ME-Xgr" customClass="BikesViewController" customModule="bikeshare" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="d3I-qm-0US">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Bikes" id="Y8F-8x-4VW"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="a6T-tv-L9a" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="937.5" y="752.5"/>
+        </scene>
+        <!--Profile-->
+        <scene sceneID="dxh-Rz-vLt">
+            <objects>
+                <viewController id="xW5-gA-VGf" customClass="ProfileViewController" customModule="bikeshare" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="aFD-K6-Knm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Profile" id="1J1-kK-8MH"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dBj-AJ-gfW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1405.5" y="468.5"/>
         </scene>
         <!--Sign Up View Controller-->
         <scene sceneID="7rB-y9-zLj">
@@ -135,7 +213,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5vh-s2-Ja2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1116.5" y="48.5"/>
+            <point key="canvasLocation" x="1662.5" y="-1194.5"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="W9c-Hy-X99">
@@ -195,6 +273,7 @@
         <!--Navigation Controller-->
         <scene sceneID="Pba-2u-pTJ">
             <objects>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eRN-S1-3Uy" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="5ky-z0-3C5" sceneMemberID="viewController">
                     <toolbarItems/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics"/>
@@ -208,7 +287,6 @@
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="BRa-ep-eRn"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eRN-S1-3Uy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="173.59999999999999" y="-377.71999999999997"/>
         </scene>
