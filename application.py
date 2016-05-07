@@ -152,4 +152,4 @@ if __name__ == "__main__":
     #
     # run()
     application.debug = True
-    application.run()
+    application.run(host='0.0.0.0')
