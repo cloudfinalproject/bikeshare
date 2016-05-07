@@ -1,9 +1,11 @@
-from bike_data_access import *
-from server.config import *
+#from bike_data_access import *
+# from server.config import *
 from sqlalchemy import *
+from user_msg_access import *
+from user_request_access import *
 
 
-DATABASEURI = database_uri
+DATABASEURI = 'postgresql://yc3171:65676567@cloudproject.c0amxekhefct.us-west-2.rds.amazonaws.com:5432/bikesharing'
 engine = create_engine(DATABASEURI)
 conn = None
 try:
@@ -13,5 +15,5 @@ except:
     import traceback; traceback.print_exc()
     conn = None
 
-bda = BikeDataAccess(conn)
-print bda.get_bikes_by_user_id(1)
+ura = UserRequestAccess(conn)
+print ura.respondRequest('3', 'Approved')
