@@ -31,8 +31,8 @@ class LoginViewController: UIViewController {
 
     @IBAction func loginTapped(sender: UIButton) {
         //authentication code
-        let username = usernameText.text
-        let password = passwordText.text
+        let username = usernameText.text!
+        let password = passwordText.text!
         if(username == "" || password == ""){
             //Create the AlertController
             let actionSheetController: UIAlertController = UIAlertController(title: "Alert", message: "Login failed", preferredStyle: .Alert)

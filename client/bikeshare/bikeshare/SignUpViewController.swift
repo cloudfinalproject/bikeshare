@@ -50,11 +50,11 @@ class SignUpViewController: UIViewController {
             return
         }
 
-        let username = usernameText.text
-        let password = passwordText.text
-        let email = emailText.text
-        let firstName = firstNameText.text
-        let lastName = lastNameText.text
+        let username = usernameText.text!
+        let password = passwordText.text!
+        let email = emailText.text!
+        let firstName = firstNameText.text!
+        let lastName = lastNameText.text!
         let request = NSMutableURLRequest(URL: NSURL(string: serverDomain + "/register")!)
         request.HTTPMethod = "POST"
         let payload = "username=\(username)&password=\(password)&email=\(email)&firstname=\(firstName)&lastname=\(lastName)"
