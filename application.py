@@ -1,6 +1,8 @@
 #!/usr/bin/env python2.7
 
 import os
+import decimal
+import flask.json
 from sqlalchemy import *
 from flask import Flask, request, render_template, g, redirect, Response, session, jsonify, abort
 from server.config import *
@@ -9,8 +11,17 @@ from server.data_access.bike_data_access import *
 from server.data_access.user_msg_access import *
 
 
+class MyJSONEncoder(flask.json.JSONEncoder):
+
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            # Convert decimal instances to strings.
+            return str(obj)
+        return super(MyJSONEncoder, self).default(obj)
+
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 application = api = Flask(__name__, template_folder=tmpl_dir)
+application.json_encoder = MyJSONEncoder
 
 # set the secret key.  keep this really secret:
 application.secret_key = secret_key
@@ -91,6 +102,24 @@ def get_all_bikes():
     else:
         bda = BikeDataAccess(g.conn)
         output = bda.get_bikes_by_user_id(session['uid'])
+
+        return jsonify(output)
+
+
+@application.route('/getAvailableBikes')
+def get_available_bikes():
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        bda = BikeDataAccess(g.conn)
+        lon = request.args.get('lon')
+        lat = request.args.get('lat')
+        distance = request.args.get('distance')
+        from_date = request.args.get('from_date')
+        to_date = request.args.get('to_date')
+        # from_price = request.form['from_price']
+        # to_price = request.form['to_price']
+        output = bda.get_available_bikes(lon, lat, distance, from_date, to_date)
 
         return jsonify(output)
 

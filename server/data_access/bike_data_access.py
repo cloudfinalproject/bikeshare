@@ -1,3 +1,6 @@
+import sys
+
+
 class BikeDataAccess:
     def __init__(self, conn):
         self.conn = conn
@@ -37,7 +40,7 @@ class BikeDataAccess:
 
         return output
 
-    def get_available_bikes(self, lon, lat, distance, from_date, to_date, from_price, to_price):
+    def get_available_bikes(self, lon, lat, distance, from_date, to_date, from_price=0, to_price=sys.maxint):
         output = {'result': {}, 'status': False, 'message': ''}
         bikes = []
         cursor = self.conn.execute("""
@@ -45,12 +48,13 @@ class BikeDataAccess:
         from bikes b
         where (point(%s, %s) <@> point(lon, lat)) < %s
         and b.status = true
+        and b.price between %s and %s
         order by distance
-        """, (lon, lat, lon, lat, distance))
+        """, (lon, lat, lon, lat, distance, from_price, to_price))
         for row in cursor:
             bike = dict(row)
-            bike['price'] = float(row['price'])
-            bikes.append(bike)
+            if self.__is_bike_available(bike['bid'], from_date, to_date):
+                bikes.append(bike)
         cursor.close()
 
         output['status'] = True
@@ -60,3 +64,14 @@ class BikeDataAccess:
 
     def __is_bike_available(self, bid, from_date, to_date):
         is_available = False
+
+        cursor = self.conn.execute("""select count(*) as size from requests
+        where from_date < %s
+        and %s < to_date
+        and bid = %s""", (to_date, from_date, bid))
+        for row in cursor:
+            size = int(row['size'])
+            if size == 0:
+                is_available = True
+
+        return is_available
