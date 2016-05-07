@@ -92,6 +92,22 @@ class UserDataAccess:
 
         return output
 
+    def change_password(self, user_id, old_password, new_password):
+        output = {'message': '', 'status': False}
+        cursor = self.conn.execute('select count(*) as size from users where password=%s and uid=%s', (old_password, user_id))
+        for row in cursor:
+            if int(row['size']) > 0:
+                output['status'] = True
+                output['message'] = 'Your password has been changed!'
+
+                self.conn.execute('update users set password=%s where uid=%s', (new_password, user_id))
+            else:
+                output['status'] = False
+                output['message'] = 'The old password is NOT correct!'
+        cursor.close()
+
+        return output
+
     def __is_your_email_unique(self, user_id, email):
         message = 'You can use this email!'
         status = True
@@ -104,3 +120,16 @@ class UserDataAccess:
         cursor.close()
 
         return status, message
+
+    def get_user(self, user_id):
+        output = {'result': {}, 'status': False, 'message': ''}
+        cursor = self.conn.execute('select u.* from users u where u.uid=%s', user_id)
+        for row in cursor:
+            user = dict(row)
+            del user['password']
+        cursor.close()
+
+        output['status'] = True
+        output['result']['user'] = user
+
+        return output

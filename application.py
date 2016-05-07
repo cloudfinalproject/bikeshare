@@ -94,6 +94,42 @@ def get_all_bikes():
 
         return jsonify(output)
 
+
+@application.route('/getProfile')
+def get_profile():
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        uda = UserDataAccess(g.conn)
+        user_id = session['uid']
+        output = uda.get_user(user_id)
+
+        return jsonify(output)
+
+@application.route('/updateProfile', methods=['POST'])
+def update_profile():
+    method = request.form['method']
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        uda = UserDataAccess(g.conn)
+        if method == 'changePassword':
+            user_id = session['uid']
+            old_password = request.form['old_password']
+            new_password = request.form['new_password']
+            output = uda.change_password(user_id, old_password, new_password)
+
+            return jsonify(output)
+        else:
+            user_id = session['uid']
+            email = request.form['email']
+            firstname = request.form['firstname']
+            lastname = request.form['lastname']
+            output = uda.update_profile(user_id, firstname, lastname, email)
+
+            return jsonify(output)
+
+
 @application.route('/view/sendMsg')
 def view_send_msg():
     return render_template('sendMsg.html')
