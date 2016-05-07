@@ -16,7 +16,7 @@ class MyJSONEncoder(flask.json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, decimal.Decimal):
             # Convert decimal instances to strings.
-            return str(obj)
+            return float(obj)
         return super(MyJSONEncoder, self).default(obj)
 
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
@@ -57,13 +57,13 @@ def teardown_request(exception):
     except Exception as e:
         pass
 
-
+######## User ########
 @application.route('/login')
 def login():  # test view
     return render_template("login.html")
 
 @application.route('/view/register')
-def reg():
+def reg():  # test view
     return render_template('register.html')
 
 @application.route('/userLogin', methods=['POST'])
@@ -95,6 +95,8 @@ def register():
 
     return jsonify(output)
 
+
+######## User bikes ########
 @application.route('/getAllBikes')
 def get_all_bikes():
     if not session or 'uid' not in session:
@@ -105,7 +107,66 @@ def get_all_bikes():
 
         return jsonify(output)
 
+@application.route('/addBike', methods=['POST'])
+def add_bike():
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        bda = BikeDataAccess(g.conn)
+        user_id = session['uid']
+        model = request.form['model']
+        price = request.form['price']
+        address = request.form['address']
+        state = request.form['state']
+        city = request.form['city']
+        postcode = request.form['postcode']
+        country = request.form['country']
+        lat = request.form['lat']
+        lon = request.form['lon']
+        details = request.form['details']
+        output = bda.add_bike(user_id, model, price, address, state, city, postcode, country, lat, lon, details)
 
+        return jsonify(output)
+
+@application.route('/editBike/<bid>', methods=['POST'])
+def edit_bike(bid):
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        bid = int(bid)
+        bda = BikeDataAccess(g.conn)
+        method = request.form('method')
+        if method == 'updateAddress':
+            address = request.form['address']
+            state = request.form['state']
+            city = request.form['city']
+            postcode = request.form['postcode']
+            country = request.form['country']
+            lat = request.form['lat']
+            lon = request.form['lon']
+            output = bda.edit_bike_address(bid, address, state, city, postcode, country, lat, lon)
+
+            return jsonify(output)
+        elif method == 'updateInfo':
+            model = request.form['model']
+            price = request.form['price']
+            details = request.form['details']
+            output = bda.edit_bike_info(bid, model, price, details)
+
+            return jsonify(output)
+
+@application.route('/getBike/<bid>')
+def get_bike(bid):
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        bid = int(bid)
+        bda = BikeDataAccess(g.conn)
+        output = bda.get_bike(bid)
+
+        return jsonify(output)
+
+######## Get available bikes ########
 @application.route('/getAvailableBikes')
 def get_available_bikes():
     if not session or 'uid' not in session:
@@ -124,6 +185,7 @@ def get_available_bikes():
         return jsonify(output)
 
 
+######## User  profile ########
 @application.route('/getProfile')
 def get_profile():
     if not session or 'uid' not in session:
@@ -159,6 +221,7 @@ def update_profile():
             return jsonify(output)
 
 
+######## Message ########
 @application.route('/view/sendMsg')
 def view_send_msg():
     return render_template('sendMsg.html')
@@ -166,7 +229,6 @@ def view_send_msg():
 @application.route('/view/showMsg')
 def view_show_msg():
     return render_template('showMsg.html')
-
 
 @application.route('/sendMsg', methods=['POST'])
 def sendMsg():
@@ -179,12 +241,9 @@ def sendMsg():
 
     return jsonify(output)
 
-
-
 @application.route('/showMsg', methods=['REQUEST'])
 def showMsg():
     uid = session['uid']
-
 
     uma = UserMsgAccess(g.conn)
     output = uma.showMsg(uid)
