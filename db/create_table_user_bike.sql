@@ -25,3 +25,15 @@ create table bikes
     primary key(bid),
     foreign key(uid) references users
   )
+
+alter table bikes
+  add column address varchar(255),
+  add column state varchar(50),
+  add column city varchar(255),
+  add column postcode varchar(20),
+  add column country varchar(50),
+  add column lon numeric,
+  add column lat numeric
+
+CREATE EXTENSION cube;
+CREATE EXTENSION earthdistance;

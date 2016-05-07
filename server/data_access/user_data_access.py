@@ -79,3 +79,28 @@ class UserDataAccess:
 
         return status, message
 
+    def update_profile(self, user_id, firstname, lastname, email):
+        output = {'message': '', 'status': False}
+        status, message = self.__is_your_email_unique(user_id, email)
+        if not status:
+            output['status'] = status
+            output['message'] = message
+        else:
+            output['status'] = status
+            output['message'] = 'You have successfully updated your profile!'
+            self.conn.execute('update users set firstname=%s, lastname=%s, email=%s where uid=%s', (firstname, lastname, email, user_id))
+
+        return output
+
+    def __is_your_email_unique(self, user_id, email):
+        message = 'You can use this email!'
+        status = True
+
+        cursor = self.conn.execute('select count(*) as size from users where email=%s and uid!=%s', (email, user_id))
+        for row in cursor:
+            if int(row['size']) > 0:
+                status = False
+                message = 'The email has been taken!'
+        cursor.close()
+
+        return status, message

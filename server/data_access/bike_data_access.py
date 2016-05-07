@@ -36,3 +36,27 @@ class BikeDataAccess:
         output['result'] = bike
 
         return output
+
+    def get_available_bikes(self, lon, lat, distance, from_date, to_date, from_price, to_price):
+        output = {'result': {}, 'status': False, 'message': ''}
+        bikes = []
+        cursor = self.conn.execute("""
+        select *, point(%s, %s) <@> point(lon, lat)::point AS distance
+        from bikes b
+        where (point(%s, %s) <@> point(lon, lat)) < %s
+        and b.status = true
+        order by distance
+        """, (lon, lat, lon, lat, distance))
+        for row in cursor:
+            bike = dict(row)
+            bike['price'] = float(row['price'])
+            bikes.append(bike)
+        cursor.close()
+
+        output['status'] = True
+        output['result'] = bikes
+
+        return output
+
+    def __is_bike_available(self, bid, from_date, to_date):
+        is_available = False
