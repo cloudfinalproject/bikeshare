@@ -169,13 +169,23 @@ def upload():
 
             return jsonify(output)
 
-@application.route('/removePhoto/<pid>', methods=['POST'])
+@application.route('/removePhoto/<pid>')
 def remove_photo(pid):
     if not session or 'uid' not in session:
         return abort(403)
     else:
         bda = BikeDataAccess(g.conn)
         output = bda.remove_photo(pid)
+
+        return jsonify(output)
+
+@application.route('/getBikePhotos/<bid>')
+def get_bike_photos(bid):
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        bda = BikeDataAccess(g.conn)
+        output = bda.get_bike_photos(bid)
 
         return jsonify(output)
 

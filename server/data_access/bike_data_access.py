@@ -69,7 +69,7 @@ class BikeDataAccess:
 
     def remove_photo(self, pid):
         output = {'result': {}, 'status': False, 'message': ''}
-        cursor = self.conn.execute("""update bike_photos set status = 'false' where pid = """, (pid, ))
+        cursor = self.conn.execute("""update bike_photos set status = false where pid = %s""", (pid, ))
         cursor.close()
 
         output['message'] = 'The photo has been successfully removed.'
@@ -81,7 +81,7 @@ class BikeDataAccess:
     def get_bike_photos(self, bid):
         output = {'result': {}, 'status': False, 'message': ''}
         photos = []
-        cursor = self.conn.execute("SELECT * FROM bike_photos WHERE bid=%s", (bid,))
+        cursor = self.conn.execute("SELECT * FROM bike_photos WHERE bid=%s and status = true", (bid,))
         for row in cursor:
             photo = dict(row)
             photos.append(photo)
