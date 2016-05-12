@@ -343,9 +343,10 @@ def send_request():
         bid = request.form['bid']
         from_date = request.form['from_date']
         to_date = request.form['to_date']
+        message = request.form['message']
 
         ura = UserRequestAccess(g.conn)
-        output = ura.send_request(user_id, bid, from_date, to_date)
+        output = ura.send_request(user_id, bid, from_date, to_date, message)
 
         return jsonify(output)
 

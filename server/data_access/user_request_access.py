@@ -1,4 +1,5 @@
 from user_data_access import *
+from user_msg_access import *
 from bike_data_access import *
 
 
@@ -86,7 +87,7 @@ class UserRequestAccess:
             return output
 
 
-    def send_request(self, uid, bid, from_date, to_date, respond='pending'):
+    def send_request(self, uid, bid, from_date, to_date, contents, respond='pending'):
         output = {'result': {}, 'status': False, 'message': ''}
         status = False
         message = ''
@@ -101,6 +102,11 @@ class UserRequestAccess:
 
             for row in cursor:
                 new_request_id = row['rid']
+
+                if contents:
+                    uma = UserMsgAccess(self.conn)
+                    uma.send_message(uid, new_request_id, contents)
+
                 # creationdate = row['creationdate']
                 output['result']['rid'] = new_request_id
             # output['result']['creationdate'] = creationdate
