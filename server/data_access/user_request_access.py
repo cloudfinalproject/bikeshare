@@ -16,6 +16,7 @@ class UserRequestAccess:
             query = 'SELECT r.* FROM requests r, bikes b WHERE r.bid = b.bid AND b.uid = ' + str(uid)
             if request_status:
                 query += ' AND r.status = ' + str(request_status)
+            query += ' ORDER BY r.rid'
             cursor = self.conn.execute(query)
 
             for row in cursor:
@@ -85,7 +86,6 @@ class UserRequestAccess:
             output['message'] = message
             output['result'] = request
             return output
-
 
     def send_request(self, uid, bid, from_date, to_date, contents, respond='pending'):
         output = {'result': {}, 'status': False, 'message': ''}
