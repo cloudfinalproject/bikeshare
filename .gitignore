@@ -48,3 +48,7 @@ server/config.py
 client/bikeshare/Pods/*
 
 /*.pyc
+server/__init__.pyc
+server/config.pyc
+server/data_access/__init__.pyc
+server/data_access/user_data_access.pyc
