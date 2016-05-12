@@ -51,5 +51,11 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Show your location on the map</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Allow bikeshare use your location in background</string>
+	<key>NSLocationAlwaysInUse</key>
+	<string></string>
 </dict>
 </plist>

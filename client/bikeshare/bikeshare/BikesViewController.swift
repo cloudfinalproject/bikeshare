@@ -10,6 +10,7 @@ import UIKit
 
 class BikesViewController: UIViewController {
 
+    @IBOutlet weak var testBtn: UIButton!
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -32,4 +33,7 @@ class BikesViewController: UIViewController {
     }
     */
 
+    @IBAction func onTestTapped(sender: UIButton) {
+        testBtn.setTitle("tapped", forState: UIControlState.Normal)
+    }
 }
