@@ -1,4 +1,5 @@
 import sys
+from user_data_access import *
 
 
 class BikeDataAccess:
@@ -11,7 +12,11 @@ class BikeDataAccess:
         cursor = self.conn.execute("SELECT * FROM bikes WHERE uid=%s", (user_id,))
         for row in cursor:
             bike = dict(row)
-            bike['price'] = float(row['price'])
+
+            bid = bike['bid']
+            photos = self.get_bike_photos(bid)
+            bike['photos'] = photos['result']
+
             bikes.append(bike)
         cursor.close()
 
@@ -41,15 +46,49 @@ class BikeDataAccess:
             bike['details'] = details
 
             if file_url:
-                cursor_1 = self.conn.execute("""insert into bike_photos(bid, url)
-                values (%s, %s)""", (new_bike_id, file_url))
-                cursor_1.close()
-                bike['file_url'] = file_url
+                self.add_photo(str(file_url), new_bike_id)
 
         cursor.close()
         output['status'] = True
         output['message'] = 'A new bike is added!'
         output['result'] = bike
+
+        return output
+
+    def add_photo(self, url, bid):
+        output = {'result': {}, 'status': False, 'message': ''}
+        cursor = self.conn.execute("""insert into bike_photos(bid, url) values (%s, %s)""", (bid, url))
+        cursor.close()
+
+        output['message'] = 'The photo has been successfully added.'
+        output['status'] = True
+        output['result']['bid'] = bid
+        output['result']['url'] = url
+
+        return output
+
+    def remove_photo(self, pid):
+        output = {'result': {}, 'status': False, 'message': ''}
+        cursor = self.conn.execute("""update bike_photos set status = 'false' where pid = """, (pid, ))
+        cursor.close()
+
+        output['message'] = 'The photo has been successfully removed.'
+        output['status'] = True
+        output['result']['pid'] = pid
+
+        return output
+
+    def get_bike_photos(self, bid):
+        output = {'result': {}, 'status': False, 'message': ''}
+        photos = []
+        cursor = self.conn.execute("SELECT * FROM bike_photos WHERE bid=%s", (bid,))
+        for row in cursor:
+            photo = dict(row)
+            photos.append(photo)
+        cursor.close()
+
+        output['status'] = True
+        output['result'] = photos
 
         return output
 
@@ -79,6 +118,15 @@ class BikeDataAccess:
         cursor = self.conn.execute("SELECT * FROM bikes WHERE bid=%s", (bid,))
         for row in cursor:
             bike = dict(row)
+
+            uda = UserDataAccess(self.conn)
+            owner_id = bike['uid']
+            owner = uda.get_user(owner_id)
+            bike['owner'] = owner['result']['user']
+
+            bid = bike['bid']
+            photos = self.get_bike_photos(bid)
+            bike['photos'] = photos['result']
         cursor.close()
 
         output['status'] = True
@@ -113,6 +161,11 @@ class BikeDataAccess:
                 }
                 bike['properties'] = bike_info
                 bike['properties']['name'] = row['model']
+
+                bid = bike_info['bid']
+                photos = self.get_bike_photos(bid)
+                bike['properties']['photos'] = photos['result']
+
                 bikes.append(bike)
         cursor.close()
 

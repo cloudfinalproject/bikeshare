@@ -26,6 +26,7 @@ tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 application = api = Flask(__name__, template_folder=tmpl_dir)
 application.json_encoder = MyJSONEncoder
 application.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
+application.config['UPLOAD_FOLDER'] = 'uploads/'
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -136,21 +137,47 @@ def add_bike():
 
         return jsonify(output)
 
-def __add_photo():
+@application.route('/view/upload')
+def upload_view():  # test view
+    return render_template("upload.html")
+
+@application.route('/upload', methods=['POST'])
+def upload():
     if not session or 'uid' not in session:
-        return False
+        return abort(403)
     else:
         photo_file = request.files['file']
+        bid = request.form['bid']
         if photo_file and allowed_file(photo_file.filename):
             filename = secure_filename(photo_file.filename)
-            conn = tinys3.Connection(S3_ACCESS_KEY, S3_SECRET_KEY, tls=True)
+            photo_file.save(os.path.join(application.config['UPLOAD_FOLDER'], filename))
 
-            f = open(filename, 'rb')
+            f = open(os.path.join(application.config['UPLOAD_FOLDER'], filename), 'rb')
+            conn = tinys3.Connection(S3_ACCESS_KEY, S3_SECRET_KEY, tls=True, endpoint='s3-us-west-2.amazonaws.com')
             conn.upload(filename, f, 'bike-share-comse6998')
 
-            return S3_BUCKET_URL + filename
+            url = S3_BUCKET_URL + filename
+            bda = BikeDataAccess(g.conn)
+            output = bda.add_photo(url, bid)
 
-        return False
+            return jsonify(output)
+        else:
+            output = {
+                'message': 'Unsupported file format',
+                'status': False
+            }
+
+            return jsonify(output)
+
+@application.route('/removePhoto/<pid>', methods=['POST'])
+def remove_photo(pid):
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        bda = BikeDataAccess(g.conn)
+        output = bda.remove_photo(pid)
+
+        return jsonify(output)
 
 @application.route('/editBike/<bid>', methods=['POST'])
 def edit_bike(bid):
