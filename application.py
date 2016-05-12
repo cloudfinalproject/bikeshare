@@ -341,8 +341,8 @@ def send_request():
     else:
         user_id = session['uid']
         bid = request.form['bid']
-        from_date = request.form['from_date']
-        to_date = request.form['to_date']
+        from_date = request.form['from_date'].replace(' ', '+')
+        to_date = request.form['to_date'].replace(' ', '+')
         message = request.form['message']
 
         ura = UserRequestAccess(g.conn)
