@@ -200,8 +200,8 @@ def get_available_bikes():
         lon = request.args.get('lon')
         lat = request.args.get('lat')
         distance = request.args.get('distance')
-        from_date = request.args.get('from_date')
-        to_date = request.args.get('to_date')
+        from_date = request.args.get('from_date').replace(' ', '+')
+        to_date = request.args.get('to_date').replace(' ', '+')
         # from_price = request.form['from_price']
         # to_price = request.form['to_price']
         output = bda.get_available_bikes(lon, lat, distance, from_date, to_date)
