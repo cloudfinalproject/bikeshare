@@ -2,6 +2,7 @@
 
 import os
 import decimal
+import tinys3
 import flask.json
 from sqlalchemy import *
 from flask import Flask, request, render_template, g, redirect, Response, session, jsonify, abort
@@ -9,6 +10,8 @@ from server.config import *
 from server.data_access.user_data_access import *
 from server.data_access.bike_data_access import *
 from server.data_access.user_msg_access import *
+from server.data_access.user_request_access import *
+from werkzeug.utils import secure_filename
 
 
 class MyJSONEncoder(flask.json.JSONEncoder):
@@ -22,6 +25,11 @@ class MyJSONEncoder(flask.json.JSONEncoder):
 tmpl_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
 application = api = Flask(__name__, template_folder=tmpl_dir)
 application.json_encoder = MyJSONEncoder
+application.config['ALLOWED_EXTENSIONS'] = set(['png', 'jpg', 'jpeg', 'gif'])
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in application.config['ALLOWED_EXTENSIONS']
 
 # set the secret key.  keep this really secret:
 application.secret_key = secret_key
@@ -127,6 +135,22 @@ def add_bike():
         output = bda.add_bike(user_id, model, price, address, state, city, postcode, country, lat, lon, details)
 
         return jsonify(output)
+
+def __add_photo():
+    if not session or 'uid' not in session:
+        return False
+    else:
+        photo_file = request.files['file']
+        if photo_file and allowed_file(photo_file.filename):
+            filename = secure_filename(photo_file.filename)
+            conn = tinys3.Connection(S3_ACCESS_KEY, S3_SECRET_KEY, tls=True)
+
+            f = open(filename, 'rb')
+            conn.upload(filename, f, 'bike-share-comse6998')
+
+            return S3_BUCKET_URL + filename
+
+        return False
 
 @application.route('/editBike/<bid>', methods=['POST'])
 def edit_bike(bid):
@@ -249,6 +273,59 @@ def showMsg():
     output = uma.showMsg(uid)
 
     return jsonify(output)
+
+
+######## Request ########
+@application.route('/getRequests')
+def get_requests():
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        ura = UserRequestAccess(g.conn)
+        user_id = session['uid']
+        output = ura.get_requests(user_id)
+
+        return jsonify(output)
+
+@application.route('/getRequest/<rid>')
+def get_request(rid):
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        ura = UserRequestAccess(g.conn)
+        rid = int(rid)
+        output = ura.get_request_by_id(rid)
+
+        return jsonify(output)
+
+@application.route('/sendRequest', methods=['POST'])
+def send_request():
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        user_id = session['uid']
+        bid = request.form['bid']
+        from_date = request.form['from_date']
+        to_date = request.form['to_date']
+
+        ura = UserRequestAccess(g.conn)
+        output = ura.send_request(user_id, bid, from_date, to_date)
+
+        return jsonify(output)
+
+@application.route('/respondRequest', methods=['POST'])
+def respond_request():
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        user_id = session['uid']
+        rid = request.form['rid']
+        respond = request.form['respond']
+
+        ura = UserRequestAccess(g.conn)
+        output = ura.respond_request(rid, respond)
+
+        return jsonify(output)
 
 
 if __name__ == "__main__":

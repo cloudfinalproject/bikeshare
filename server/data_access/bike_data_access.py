@@ -20,7 +20,7 @@ class BikeDataAccess:
 
         return output
 
-    def add_bike(self, user_id, model, price, address, state, city, postcode, country, lat, lon, details):
+    def add_bike(self, user_id, model, price, address, state, city, postcode, country, lat, lon, details, file_url=False):
         output = {'result': {}, 'status': False, 'message': ''}
         bike = {}
         cursor = self.conn.execute("""insert into bikes(uid, model, price, address, state, city, postcode, country, lat, lon, details)
@@ -39,6 +39,13 @@ class BikeDataAccess:
             bike['lat'] = lat
             bike['lon'] = lon
             bike['details'] = details
+
+            if file_url:
+                cursor_1 = self.conn.execute("""insert into bike_photos(bid, url)
+                values (%s, %s)""", (new_bike_id, file_url))
+                cursor_1.close()
+                bike['file_url'] = file_url
+
         cursor.close()
         output['status'] = True
         output['message'] = 'A new bike is added!'

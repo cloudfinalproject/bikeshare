@@ -37,3 +37,14 @@ alter table bikes
 
 CREATE EXTENSION cube;
 CREATE EXTENSION earthdistance;
+
+create table bike_photos
+  (
+    bid integer,
+    pid serial,
+    url varchar(255),
+    status boolean default true,
+
+    primary key(pid),
+    foreign key(bid) references bikes
+  )
