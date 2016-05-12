@@ -123,6 +123,7 @@ class UserDataAccess:
 
     def get_user(self, user_id):
         output = {'result': {}, 'status': False, 'message': ''}
+        user = {}
         cursor = self.conn.execute('select u.* from users u where u.uid=%s', user_id)
         for row in cursor:
             user = dict(row)

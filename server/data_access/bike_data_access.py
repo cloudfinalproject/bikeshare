@@ -102,6 +102,7 @@ class BikeDataAccess:
         for row in cursor:
             if self.__is_bike_available(row['bid'], from_date, to_date):
                 bike_info = dict(row)
+                del bike_info['password']
                 bike = {
                     'type': 'Feature',
                     'properties': {},
