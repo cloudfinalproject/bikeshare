@@ -47,4 +47,4 @@ server/config.py
 
 client/bikeshare/Pods/*
 
-*.pyc
+/*.pyc
