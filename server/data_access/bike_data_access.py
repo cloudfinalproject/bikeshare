@@ -101,17 +101,17 @@ class BikeDataAccess:
         """, (lon, lat, lon, lat, distance, from_price, to_price))
         for row in cursor:
             if self.__is_bike_available(row['bid'], from_date, to_date):
-                bike = dict(row)
-                bike['geoJSON'] = {
+                bike_info = dict(row)
+                bike = {
                     'type': 'Feature',
-                    'properties': {
-                        'name': row['model']
-                    },
+                    'properties': {},
                     'geometry': {
                         'type': 'Point',
                         'coordinates': [row['lat'], row['lon']]
                     }
                 }
+                bike['properties'] = bike_info
+                bike['properties']['name'] = row['model']
                 bikes.append(bike)
         cursor.close()
 
@@ -126,6 +126,7 @@ class BikeDataAccess:
         cursor = self.conn.execute("""select count(*) as size from requests
         where from_date < %s
         and %s < to_date
+        and status = 'approved'
         and bid = %s""", (to_date, from_date, bid))
         for row in cursor:
             size = int(row['size'])

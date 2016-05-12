@@ -6,13 +6,16 @@ class UserRequestAccess:
     def __init__(self, conn):
         self.conn = conn
 
-    def get_requests(self, uid):
+    def get_requests(self, uid, request_status=False):
         output = {'result': {}, 'status': False, 'message': ''}
         requests = []
         status = False
         message = ''
         try:
-            cursor = self.conn.execute("SELECT r.* FROM requests r, bikes b WHERE r.bid = b.bid AND b.uid = %s", (uid, ))
+            query = 'SELECT r.* FROM requests r, bikes b WHERE r.bid = b.bid AND b.uid = ' + str(uid)
+            if request_status:
+                query += ' AND r.status = ' + str(request_status)
+            cursor = self.conn.execute(query)
 
             for row in cursor:
                 r = dict(row)
@@ -124,6 +127,14 @@ class UserRequestAccess:
             cursor = self.conn.execute('update requests set status=%s where rid=%s', (respond, rid))
             cursor.close()
 
+            if respond == 'approved':  # should automatically reject all the collided requests
+                request = self.get_request_by_id(rid)
+                request = request['result']
+                bid = request['bid']
+                from_date = request['from_date']
+                to_date = request['to_date']
+                self.__reject_collided_requests(bid, from_date, to_date)
+
             message = "Request " + respond + " successfully!"
             status = True
         except Exception, e:
@@ -138,7 +149,12 @@ class UserRequestAccess:
             output['result']['respond'] = respond
             return output
 
-
-    
-   
-
+    def __reject_collided_requests(self, bid, from_date, to_date):
+        cursor = self.conn.execute("""select rid from requests
+        where from_date < %s
+        and %s < to_date
+        and status = 'pending'
+        and bid = %s""", (to_date, from_date, bid))
+        for row in cursor:
+            rid = row['rid']
+            self.respond_request(rid, 'rejected')
