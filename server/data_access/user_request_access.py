@@ -8,53 +8,6 @@ class UserRequestAccess:
     def __init__(self, conn):
         self.conn = conn
 
-    def get_requests(self, uid, request_status=False):  # get all requests from others
-        output = {'result': {}, 'status': False, 'message': ''}
-        requests = []
-        status = False
-        message = ''
-        try:
-            query = 'SELECT r.* FROM requests r, bikes b WHERE r.bid = b.bid AND b.uid = ' + str(uid)
-            if request_status:
-                query += ' AND r.status = ' + str(request_status)
-            query += ' ORDER BY r.rid desc'
-            cursor = self.conn.execute(query)
-
-            for row in cursor:
-                r = dict(row)
-
-                bid = r['bid']
-                bda = BikeDataAccess(self.conn)
-                bike = bda.get_bike(bid)
-                r['bike'] = bike['result']
-
-                uid = r['uid']
-                uda = UserDataAccess(self.conn)
-                user = uda.get_user(uid)
-                r['user'] = user['result']['user']
-
-                requests.append(r)
-
-            cursor.close()
-
-            # hack: should append all my requests as well
-            my_requests = self.get_my_requests(uid)['result']
-            requests = requests + my_requests
-
-            status = True
-            message = "You have got all the requests successfully."
-             
-        except Exception, e:
-            status = False
-            message = e
-            raise e
-
-        finally:
-            output['status'] = status
-            output['message'] = message
-            output['result'] = requests
-            return output
-
     def get_my_requests(self, uid, request_status=False):  # get all requests from others
         output = {'result': {}, 'status': False, 'message': ''}
         requests = []
@@ -83,6 +36,57 @@ class UserRequestAccess:
                 requests.append(r)
 
             cursor.close()
+
+            status = True
+            message = "You have got all the requests successfully."
+
+        except Exception, e:
+            status = False
+            message = e
+            raise e
+
+        finally:
+            output['status'] = status
+            output['message'] = message
+            output['result'] = requests
+            return output
+
+    def get_requests(self, uid, request_status=False):  # get all requests from others
+        output = {'result': {}, 'status': False, 'message': ''}
+        requests = []
+        my_requests = []
+        status = False
+        message = ''
+        try:
+            query = 'SELECT r.* FROM requests r, bikes b WHERE r.bid = b.bid AND b.uid = ' + str(uid)
+            if request_status:
+                query += ' AND r.status = ' + str(request_status)
+            query += ' ORDER BY r.rid desc'
+            cursor = self.conn.execute(query)
+
+            for row in cursor:
+                r = dict(row)
+
+                bid = r['bid']
+                bda = BikeDataAccess(self.conn)
+                bike = bda.get_bike(bid)
+                r['bike'] = bike['result']
+
+                requester_id = r['uid']
+                uda = UserDataAccess(self.conn)
+                user = uda.get_user(requester_id)
+                r['user'] = user['result']['user']
+
+                requests.append(r)
+
+            cursor.close()
+
+            # hack: should append all my requests as well
+            # print uid
+            my_requests = self.get_my_requests(uid)['result']
+            # print my_requests
+            requests = requests + my_requests
+            # print requests
 
             status = True
             message = "You have got all the requests successfully."
