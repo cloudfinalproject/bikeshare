@@ -14,7 +14,7 @@ class UserMsgAccess:
         status = False
         message = ''
         try:
-            cursor = self.conn.execute("SELECT m.*, r.uid FROM messages m, requests r WHERE m.rid = r.rid and m.rid = %s order by creationdate asc", (rid, ))
+            cursor = self.conn.execute("SELECT m.*, r.uid FROM messages m, requests r WHERE m.rid = r.rid and m.rid = %s order by creationdate desc", (rid, ))
             for row in cursor:
                 msg = dict(row)
 

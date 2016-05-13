@@ -99,7 +99,7 @@ class BikeDataAccess:
         output['message'] = 'The information of the bike has been updated!'
         self.conn.execute("""update bikes
         set address=%s, state=%s, city=%s, postcode=%s, country=%s, lat=%s, lon=%s, model=%s, price=%s, details=%s, status=%s
-        where bid=%s""", (address, state, city, postcode, country, lat, lon, bid, model, price, details, available))
+        where bid=%s""", (address, state, city, postcode, country, lat, lon, model, price, details, available, bid))
 
         return output
 
