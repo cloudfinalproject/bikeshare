@@ -7,6 +7,7 @@ import boto3
 class UserRequestAccess:
     def __init__(self, conn):
         self.conn = conn
+        self.client = boto3.client('ses', region_name='us-west-2')
 
     def get_my_requests(self, uid, request_status=False):  # get all requests from others
         output = {'result': {}, 'status': False, 'message': ''}
@@ -226,7 +227,6 @@ class UserRequestAccess:
             self.respond_request(rid, 'rejected')
 
     def __send_request_email(self, requester_id, bike, from_date, to_date, contents):
-        client = boto3.client('ses')
         uda = UserDataAccess(self.conn)
         requester = uda.get_user(requester_id)['result']['user']
         requester_name = requester['firstname'] + ' ' + requester['lastname']
@@ -245,7 +245,7 @@ class UserRequestAccess:
             """ % (requester_name, contents)
 
         try:
-            response = client.send_email(
+            response = self.client.send_email(
                 Source = 'cloudprojectcoms6998@gmail.com',
                 Destination = {
                     'ToAddresses': [
@@ -270,8 +270,6 @@ class UserRequestAccess:
         return response
 
     def __send_response_email(self, owner, requester_email, model, from_date, to_date, respond):
-        client = boto3.client('ses')
-
         owner_name = owner['firstname'] + ' ' + owner['lastname']
 
         body = """
@@ -279,7 +277,7 @@ class UserRequestAccess:
         """ % (model, from_date, to_date, respond, owner_name)
 
         try:
-            response = client.send_email(
+            response = self.client.send_email(
                 Source = 'cloudprojectcoms6998@gmail.com',
                 Destination = {
                     'ToAddresses': [

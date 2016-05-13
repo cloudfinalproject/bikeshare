@@ -1,11 +1,18 @@
 from user_data_access import *
 from user_request_access import *
 import boto3
+import logging
 
+
+logging.basicConfig(filename='/opt/python/log/my_log.log',level=logging.DEBUG)
 
 class UserMsgAccess:
     def __init__(self, conn):
         self.conn = conn
+        self.client = boto3.client(
+            'ses',
+            region_name='us-west-2'
+        )
 
     def show_messages(self, rid):
         output = {'result': {}, 'status': False, 'message': ''}
@@ -89,7 +96,7 @@ class UserMsgAccess:
         uda = UserDataAccess(self.conn)
         requester = uda.get_user(sender_id)['result']['user']
         requester_name = requester['firstname'] + ' ' + requester['lastname']
-        client = boto3.client('ses')
+
 
         body = """
         <p>%s sent you a new message:</p>
@@ -97,7 +104,7 @@ class UserMsgAccess:
         """ % (requester_name, contents)
 
         try:
-            response = client.send_email(
+            response = self.client.send_email(
                 Source = 'cloudprojectcoms6998@gmail.com',
                 Destination = {
                     'ToAddresses': [
