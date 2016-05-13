@@ -82,7 +82,7 @@ class BikeDataAccess:
     def get_bike_photos(self, bid):
         output = {'result': {}, 'status': False, 'message': ''}
         photos = []
-        cursor = self.conn.execute("SELECT * FROM bike_photos WHERE bid=%s and status = true", (bid,))
+        cursor = self.conn.execute("SELECT * FROM bike_photos WHERE bid=%s and status = true order by pid desc", (bid,))
         for row in cursor:
             photo = dict(row)
             photos.append(photo)
