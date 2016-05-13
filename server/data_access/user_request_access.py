@@ -1,11 +1,13 @@
 from user_data_access import *
 from user_msg_access import *
 from bike_data_access import *
+import boto3
 
 
 class UserRequestAccess:
     def __init__(self, conn):
         self.conn = conn
+        self.client = boto3.client('ses')
 
     def get_requests(self, uid, request_status=False):
         output = {'result': {}, 'status': False, 'message': ''}
@@ -112,6 +114,9 @@ class UserRequestAccess:
             # output['result']['creationdate'] = creationdate
             cursor.close()
 
+            response = self.__send_request_email(uid, bike['result'], from_date, to_date, contents)
+            print response
+
             status = True
             message = "Request sent successfully!"
         except Exception, e:
@@ -133,16 +138,21 @@ class UserRequestAccess:
             cursor = self.conn.execute('update requests set status=%s where rid=%s', (respond, rid))
             cursor.close()
 
+            request = self.get_request_by_id(rid)
+            request = request['result']
+            from_date = request['from_date']
+            to_date = request['to_date']
             if respond == 'approved':  # should automatically reject all the collided requests
-                request = self.get_request_by_id(rid)
-                request = request['result']
                 bid = request['bid']
-                from_date = request['from_date']
-                to_date = request['to_date']
                 self.__reject_collided_requests(bid, from_date, to_date)
 
             message = "Request " + respond + " successfully!"
             status = True
+
+            owner = request['bike']['owner']
+            model = request['bike']['model']
+            requester_email = request['user']['email']
+            response = self.__send_response_email(owner, requester_email, model, from_date, to_date, respond)
         except Exception, e:
             print e
             status = False
@@ -164,3 +174,78 @@ class UserRequestAccess:
         for row in cursor:
             rid = row['rid']
             self.respond_request(rid, 'rejected')
+
+    def __send_request_email(self, requester_id, bike, from_date, to_date, contents):
+        uda = UserDataAccess(self.conn)
+        requester = uda.get_user(requester_id)['result']['user']
+        requester_name = requester['firstname'] + ' ' + requester['lastname']
+        owner = bike['owner']
+        owner_email = owner['email']
+        model = bike['model']
+
+        body = """
+        <p>%s sent you a new request of your bike %s!</p>
+        <p>The time is between %s and %s</p>
+        """ % (requester_name, model, from_date, to_date)
+
+        if contents:
+            body += """
+            <p>%s left you a message: %s</p>
+            """ % (requester_name, contents)
+
+        try:
+            response = self.client.send_email(
+                Source = 'cloudprojectcoms6998@gmail.com',
+                Destination = {
+                    'ToAddresses': [
+                        owner_email
+                    ]
+                },
+                Message={
+                    'Subject': {
+                        'Data': 'You have a new request!'
+                    },
+                    'Body': {
+                        'Html': {
+                            'Data': body,
+                            'Charset': 'UTF-8'
+                        }
+                    }
+                }
+            )
+        except Exception as e:
+            response = e
+
+        return response
+
+    def __send_response_email(self, owner, requester_email, model, from_date, to_date, respond):
+        owner_name = owner['firstname'] + ' ' + owner['lastname']
+
+        body = """
+        <p>Your request for bike %s between %s and %s has been %s by %s!</p>
+        """ % (model, from_date, to_date, respond, owner_name)
+
+        try:
+            response = self.client.send_email(
+                Source = 'cloudprojectcoms6998@gmail.com',
+                Destination = {
+                    'ToAddresses': [
+                        requester_email
+                    ]
+                },
+                Message={
+                    'Subject': {
+                        'Data': 'Your request has been ' + respond + '!'
+                    },
+                    'Body': {
+                        'Html': {
+                            'Data': body,
+                            'Charset': 'UTF-8'
+                        }
+                    }
+                }
+            )
+        except Exception as e:
+            response = e
+
+        return response

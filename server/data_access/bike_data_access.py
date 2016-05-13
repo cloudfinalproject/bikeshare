@@ -135,7 +135,7 @@ class BikeDataAccess:
         return output
 
 
-    def get_available_bikes(self, lon, lat, distance, from_date, to_date, from_price=0, to_price=sys.maxint):
+    def get_available_bikes(self, uid, lon, lat, distance, from_date, to_date, from_price=0, to_price=sys.maxint):
         output = {'result': {}, 'status': False, 'message': ''}
         bikes = []
         cursor = self.conn.execute("""
@@ -144,9 +144,10 @@ class BikeDataAccess:
         where (point(%s, %s) <@> point(lon, lat)) < %s
         and b.status = true
         and b.uid = u.uid
+        and b.uid != %s
         and b.price between %s and %s
         order by distance
-        """, (lon, lat, lon, lat, distance, from_price, to_price))
+        """, (lon, lat, lon, lat, distance, uid, from_price, to_price))
         for row in cursor:
             if self.__is_bike_available(row['bid'], from_date, to_date):
                 bike_info = dict(row)

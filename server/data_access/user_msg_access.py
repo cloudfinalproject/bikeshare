@@ -1,9 +1,12 @@
 from user_data_access import *
+from user_request_access import *
+import boto3
 
 
 class UserMsgAccess:
     def __init__(self, conn):
         self.conn = conn
+        self.client = boto3.client('ses')
 
     def show_messages(self, rid):
         output = {'result': {}, 'status': False, 'message': ''}
@@ -57,6 +60,18 @@ class UserMsgAccess:
                 creationdate = row['creationdate']
                 output['result']['mid'] = new_msg_id
                 output['result']['creationdate'] = creationdate
+
+                uqa = UserRequestAccess(self.conn)
+                request = uqa.get_request_by_id(rid)['result']
+                owner = request['bike']['owner']
+                owner_id = owner['uid']
+                receiver_email = ''
+                if uid1 != owner_id:
+                    receiver_email = owner['email']
+                else:
+                    receiver_email = request['user']['email']
+
+                self.__send_message_email(uid1, receiver_email, contents)
             cursor.close()
 
             message = "Message sent successfully!"
@@ -71,9 +86,37 @@ class UserMsgAccess:
             output['message'] = message
             return output
 
+    def __send_message_email(self, sender_id, receiver_email, contents):
+        uda = UserDataAccess(self.conn)
+        requester = uda.get_user(sender_id)['result']['user']
+        requester_name = requester['firstname'] + ' ' + requester['lastname']
 
+        body = """
+        <p>%s sent you a new message:</p>
+        <p>%s</p>
+        """ % (requester_name, contents)
 
+        try:
+            response = self.client.send_email(
+                Source = 'cloudprojectcoms6998@gmail.com',
+                Destination = {
+                    'ToAddresses': [
+                        receiver_email
+                    ]
+                },
+                Message={
+                    'Subject': {
+                        'Data': 'You have a new message!'
+                    },
+                    'Body': {
+                        'Html': {
+                            'Data': body,
+                            'Charset': 'UTF-8'
+                        }
+                    }
+                }
+            )
+        except Exception as e:
+            response = e
 
-    
-   
-
+        return response
