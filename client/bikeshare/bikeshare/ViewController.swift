@@ -67,7 +67,7 @@ class ViewController: UIViewController, UITabBarDelegate,
             let RFC3339DateFormatter = NSDateFormatter()
             RFC3339DateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
             RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-            RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 14400)
+            RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: -14400)
             params.from_date = RFC3339DateFormatter.dateFromString(dates[0])!
             params.to_date = RFC3339DateFormatter.dateFromString(dates[1])!
             self.fromDateLabel.text = self.processDateToString(params.from_date)
@@ -157,7 +157,7 @@ class ViewController: UIViewController, UITabBarDelegate,
         let RFC3339DateFormatter = NSDateFormatter()
         RFC3339DateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
         RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 14400)
+        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: -14400)
 
         let fromDate = RFC3339DateFormatter.stringFromDate(self.searchParams!.from_date)
         let toDate = RFC3339DateFormatter.stringFromDate(self.searchParams!.to_date)
@@ -252,7 +252,7 @@ class ViewController: UIViewController, UITabBarDelegate,
         let RFC3339DateFormatter = NSDateFormatter()
         RFC3339DateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
         RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 14400)
+        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: -14400)
 
         return RFC3339DateFormatter.stringFromDate(date)
     }

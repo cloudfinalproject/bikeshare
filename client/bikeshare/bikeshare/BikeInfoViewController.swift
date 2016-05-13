@@ -17,6 +17,7 @@ class BikeInfoViewController: UIViewController {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var messageView: UITextView!
+    @IBOutlet weak var imageView: UIImageView!
 
     var bid: Int?
     var fromDate: NSDate?
@@ -25,8 +26,12 @@ class BikeInfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.messageView.text = "Hi, May I rent your bike?"
+        self.messageView.layer.borderColor = UIColor.grayColor().CGColor
+        self.messageView.layer.borderWidth = CGFloat(1)
+        self.messageView.layer.cornerRadius = CGFloat(5)
         // Do any additional setup after loading the view.
     }
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -56,6 +61,12 @@ class BikeInfoViewController: UIViewController {
                             self.priceLabel.text = String(result["price"] as! Double)
                             self.detailLabel.text = result["details"] as? String
                             self.ownerLabel.text = result["owner"]!["username"] as? String
+
+                            if result["photos"]?.count > 0{
+                                let imageURL = result["photos"]![0]?["url"] as! String
+                                self.downLoadImage(imageURL)
+                            }
+
                         }
                     }
                     print(jsonResult)
@@ -65,6 +76,20 @@ class BikeInfoViewController: UIViewController {
             }
         }
         task.resume()
+    }
+
+    private func downLoadImage(imageURL: String){
+        let url: NSURL = NSURL(string: imageURL)!
+        print(url)
+        NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) in
+            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                guard let data = data where error == nil else { return }
+                print(response?.suggestedFilename ?? "")
+                print("Download Finished")
+                self.imageView.image = UIImage(data: data)
+            }
+        }.resume()
+        
     }
 
     private func processDateToString(date: NSDate) -> String{

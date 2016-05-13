@@ -89,7 +89,7 @@ class FilterViewController: UIViewController {
         let RFC3339DateFormatter = NSDateFormatter()
         RFC3339DateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
         RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 14400)
+        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: -14400)
 
         return RFC3339DateFormatter.stringFromDate(date)
     }
