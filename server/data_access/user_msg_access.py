@@ -6,7 +6,6 @@ import boto3
 class UserMsgAccess:
     def __init__(self, conn):
         self.conn = conn
-        self.client = boto3.client('ses')
 
     def show_messages(self, rid):
         output = {'result': {}, 'status': False, 'message': ''}
@@ -36,7 +35,7 @@ class UserMsgAccess:
 
             status = True
             message = "All the messages for this request has been retrieved successfully."
-             
+
         except Exception, e:
             status = False
             message = e
@@ -61,8 +60,8 @@ class UserMsgAccess:
                 output['result']['mid'] = new_msg_id
                 output['result']['creationdate'] = creationdate
 
-                uqa = UserRequestAccess(self.conn)
-                request = uqa.get_request_by_id(rid)['result']
+                ura = UserRequestAccess(self.conn)
+                request = ura.get_request_by_id(rid)['result']
                 owner = request['bike']['owner']
                 owner_id = owner['uid']
                 receiver_email = ''
@@ -90,6 +89,7 @@ class UserMsgAccess:
         uda = UserDataAccess(self.conn)
         requester = uda.get_user(sender_id)['result']['user']
         requester_name = requester['firstname'] + ' ' + requester['lastname']
+        client = boto3.client('ses')
 
         body = """
         <p>%s sent you a new message:</p>
@@ -97,7 +97,7 @@ class UserMsgAccess:
         """ % (requester_name, contents)
 
         try:
-            response = self.client.send_email(
+            response = client.send_email(
                 Source = 'cloudprojectcoms6998@gmail.com',
                 Destination = {
                     'ToAddresses': [

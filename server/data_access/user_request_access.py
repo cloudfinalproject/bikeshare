@@ -1,13 +1,12 @@
 from user_data_access import *
-from user_msg_access import *
 from bike_data_access import *
+import user_msg_access
 import boto3
 
 
 class UserRequestAccess:
     def __init__(self, conn):
         self.conn = conn
-        self.client = boto3.client('ses')
 
     def get_requests(self, uid, request_status=False):  # get all requests from others
         output = {'result': {}, 'status': False, 'message': ''}
@@ -149,7 +148,7 @@ class UserRequestAccess:
                 new_request_id = row['rid']
 
                 if contents:
-                    uma = UserMsgAccess(self.conn)
+                    uma = user_msg_access.UserMsgAccess(self.conn)
                     uma.send_message(uid, new_request_id, contents)
 
                 # creationdate = row['creationdate']
@@ -168,7 +167,7 @@ class UserRequestAccess:
             message = e
             raise e
 
-        finally:  
+        finally:
             output['message'] = message
             output['status'] = status
             return output
@@ -219,6 +218,7 @@ class UserRequestAccess:
             self.respond_request(rid, 'rejected')
 
     def __send_request_email(self, requester_id, bike, from_date, to_date, contents):
+        client = boto3.client('ses')
         uda = UserDataAccess(self.conn)
         requester = uda.get_user(requester_id)['result']['user']
         requester_name = requester['firstname'] + ' ' + requester['lastname']
@@ -237,7 +237,7 @@ class UserRequestAccess:
             """ % (requester_name, contents)
 
         try:
-            response = self.client.send_email(
+            response = client.send_email(
                 Source = 'cloudprojectcoms6998@gmail.com',
                 Destination = {
                     'ToAddresses': [
@@ -262,6 +262,8 @@ class UserRequestAccess:
         return response
 
     def __send_response_email(self, owner, requester_email, model, from_date, to_date, respond):
+        client = boto3.client('ses')
+
         owner_name = owner['firstname'] + ' ' + owner['lastname']
 
         body = """
@@ -269,7 +271,7 @@ class UserRequestAccess:
         """ % (model, from_date, to_date, respond, owner_name)
 
         try:
-            response = self.client.send_email(
+            response = client.send_email(
                 Source = 'cloudprojectcoms6998@gmail.com',
                 Destination = {
                     'ToAddresses': [
