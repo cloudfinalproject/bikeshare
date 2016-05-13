@@ -233,6 +233,7 @@ def get_available_bikes():
     if not session or 'uid' not in session:
         return abort(403)
     else:
+        uid = session['uid']
         bda = BikeDataAccess(g.conn)
         lon = request.args.get('lon')
         lat = request.args.get('lat')
@@ -241,7 +242,7 @@ def get_available_bikes():
         to_date = request.args.get('to_date').replace(' ', '+')
         # from_price = request.form['from_price']
         # to_price = request.form['to_price']
-        output = bda.get_available_bikes(lon, lat, distance, from_date, to_date)
+        output = bda.get_available_bikes(uid, lon, lat, distance, from_date, to_date)
 
         return jsonify(output)
 
