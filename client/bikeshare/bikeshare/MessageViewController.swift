@@ -19,6 +19,7 @@ class MessageViewController: UIViewController, UITableViewDelegate,
     var messages: [AnyObject] = []
     var rid: Int?
     var status: String?
+    var username: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,7 +31,11 @@ class MessageViewController: UIViewController, UITableViewDelegate,
 
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(true)
-        if self.status == "pending" {
+        let prefs:NSUserDefaults = NSUserDefaults.standardUserDefaults()
+        let userName: String = prefs.stringForKey("USERNAME")! as String
+        if userName == self.username {
+            self.approveBtn.hidden = true
+        }else if self.status == "pending" {
             self.approveBtn.setTitle("Approve", forState: .Normal)
         }else if self.status == "approved" {
             self.approveBtn.backgroundColor = UIColor.blueColor()

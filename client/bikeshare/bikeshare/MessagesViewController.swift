@@ -15,6 +15,7 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
     var requests: [AnyObject] = []
     var selectedRid: Int?
     var selectedStatus: String?
+    var username: String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,6 +34,7 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         if let vc = segue.destinationViewController as? MessageViewController{
             vc.rid = self.selectedRid
             vc.status = self.selectedStatus
+            vc.username = self.username
         }
     }
 
@@ -79,6 +81,7 @@ class MessagesViewController: UIViewController, UITableViewDelegate, UITableView
         print("You selected cell #\(indexPath.row)!")
         self.selectedRid = self.requests[indexPath.row]["rid"] as? Int
         self.selectedStatus = self.requests[indexPath.row]["status"] as? String
+        self.username = self.requests[indexPath.row]["user"]!!["username"] as? String
         self.performSegueWithIdentifier("goto_request", sender: self)
     }
 
