@@ -25,16 +25,17 @@ class BikeDataAccess:
 
         return output
 
-    def add_bike(self, user_id, model, price, address, state, city, postcode, country, lat, lon, details, file_url=False):
+    def add_bike(self, user_id, model, available, price, address, state, city, postcode, country, lat, lon, details, file_url=False):
         output = {'result': {}, 'status': False, 'message': ''}
         bike = {}
-        cursor = self.conn.execute("""insert into bikes(uid, model, price, address, state, city, postcode, country, lat, lon, details)
-        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) returning bid""", (user_id, model, price, address, state, city, postcode, country, lat, lon, details))
+        cursor = self.conn.execute("""insert into bikes(uid, model, status, price, address, state, city, postcode, country, lat, lon, details)
+        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) returning bid""", (user_id, model, available, price, address, state, city, postcode, country, lat, lon, details))
         for row in cursor:
             new_bike_id = row['bid']
             bike['bid'] = new_bike_id
             bike['uid'] = user_id
             bike['model'] = model
+            bike['status'] = available
             bike['price'] = price
             bike['address'] = address
             bike['state'] = state
@@ -92,25 +93,25 @@ class BikeDataAccess:
 
         return output
 
-    def edit_bike_address(self, bid, address, state, city, postcode, country, lat, lon):
-        output = {'message': '', 'status': False}
-        output['status'] = True
-        output['message'] = 'The address of the bike has been updated!'
-        self.conn.execute("""update bikes
-        set address=%s, state=%s, city=%s, postcode=%s, country=%s, lat=%s, lon=%s
-        where bid=%s""", (address, state, city, postcode, country, lat, lon, bid))
-
-        return output
-
-    def edit_bike_info(self, bid, model, price, details):
+    def edit_bike(self, bid, address, state, city, postcode, country, lat, lon, model, price, details, available):
         output = {'message': '', 'status': False}
         output['status'] = True
         output['message'] = 'The information of the bike has been updated!'
         self.conn.execute("""update bikes
-        set model=%s, price=%s, details=%s
-        where bid=%s""", (model, price, details, bid))
+        set address=%s, state=%s, city=%s, postcode=%s, country=%s, lat=%s, lon=%s, model=%s, price=%s, details=%s, status=%s
+        where bid=%s""", (address, state, city, postcode, country, lat, lon, bid, model, price, details, available))
 
         return output
+
+    # def edit_bike_info(self, bid, model, price, details):
+    #     output = {'message': '', 'status': False}
+    #     output['status'] = True
+    #     output['message'] = 'The information of the bike has been updated!'
+    #     self.conn.execute("""update bikes
+    #     set model=%s, price=%s, details=%s
+    #     where bid=%s""", (model, price, details, bid))
+    #
+    #     return output
 
     def get_bike(self, bid):
         output = {'result': {}, 'status': False, 'message': ''}

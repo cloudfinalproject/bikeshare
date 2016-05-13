@@ -124,6 +124,7 @@ def add_bike():
         bda = BikeDataAccess(g.conn)
         user_id = session['uid']
         model = request.form['model']
+        available = request.form['available']
         price = request.form['price']
         address = request.form['address']
         state = request.form['state']
@@ -133,7 +134,7 @@ def add_bike():
         lat = request.form['lat']
         lon = request.form['lon']
         details = request.form['details']
-        output = bda.add_bike(user_id, model, price, address, state, city, postcode, country, lat, lon, details)
+        output = bda.add_bike(user_id, model, available, price, address, state, city, postcode, country, lat, lon, details)
 
         return jsonify(output)
 
@@ -196,25 +197,20 @@ def edit_bike(bid):
     else:
         bid = int(bid)
         bda = BikeDataAccess(g.conn)
-        method = request.form('method')
-        if method == 'updateAddress':
-            address = request.form['address']
-            state = request.form['state']
-            city = request.form['city']
-            postcode = request.form['postcode']
-            country = request.form['country']
-            lat = request.form['lat']
-            lon = request.form['lon']
-            output = bda.edit_bike_address(bid, address, state, city, postcode, country, lat, lon)
+        address = request.form['address']
+        state = request.form['state']
+        city = request.form['city']
+        postcode = request.form['postcode']
+        country = request.form['country']
+        lat = request.form['lat']
+        lon = request.form['lon']
+        model = request.form['model']
+        price = request.form['price']
+        details = request.form['details']
+        available = request.form['available']
+        output = bda.edit_bike(bid, address, state, city, postcode, country, lat, lon, model, price, details, available)
 
-            return jsonify(output)
-        elif method == 'updateInfo':
-            model = request.form['model']
-            price = request.form['price']
-            details = request.form['details']
-            output = bda.edit_bike_info(bid, model, price, details)
-
-            return jsonify(output)
+        return jsonify(output)
 
 @application.route('/getBike/<bid>')
 def get_bike(bid):
