@@ -13,9 +13,9 @@
 		E0697B211CDC3BA200FFEEEA /* BikesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */; };
 		E0697B231CDC3BAE00FFEEEA /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B221CDC3BAE00FFEEEA /* ProfileViewController.swift */; };
 		E08F0B5C1CE4105F002C9DDD /* FilterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08F0B5B1CE4105F002C9DDD /* FilterViewController.swift */; };
-		E08F0B5E1CE4F184002C9DDD /* InfoWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = E08F0B5D1CE4F184002C9DDD /* InfoWindow.xib */; };
-		E08F0B601CE4F1DD002C9DDD /* CustomInfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08F0B5F1CE4F1DD002C9DDD /* CustomInfoWindow.swift */; };
 		E08F0B621CE4F94A002C9DDD /* BikeInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08F0B611CE4F94A002C9DDD /* BikeInfoViewController.swift */; };
+		E08F0B641CE549A0002C9DDD /* MessageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08F0B631CE549A0002C9DDD /* MessageViewController.swift */; };
+		E08F0B661CE585F0002C9DDD /* TransactionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E08F0B651CE585F0002C9DDD /* TransactionViewController.swift */; };
 		E0A142D51CBD47C400C5AED7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A142D41CBD47C400C5AED7 /* AppDelegate.swift */; };
 		E0A142D71CBD47C400C5AED7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0A142D61CBD47C400C5AED7 /* ViewController.swift */; };
 		E0A142DA1CBD47C400C5AED7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0A142D81CBD47C400C5AED7 /* Main.storyboard */; };
@@ -46,9 +46,9 @@
 		E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BikesViewController.swift; sourceTree = "<group>"; };
 		E0697B221CDC3BAE00FFEEEA /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		E08F0B5B1CE4105F002C9DDD /* FilterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilterViewController.swift; sourceTree = "<group>"; };
-		E08F0B5D1CE4F184002C9DDD /* InfoWindow.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoWindow.xib; sourceTree = "<group>"; };
-		E08F0B5F1CE4F1DD002C9DDD /* CustomInfoWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomInfoWindow.swift; sourceTree = "<group>"; };
 		E08F0B611CE4F94A002C9DDD /* BikeInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BikeInfoViewController.swift; sourceTree = "<group>"; };
+		E08F0B631CE549A0002C9DDD /* MessageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MessageViewController.swift; sourceTree = "<group>"; };
+		E08F0B651CE585F0002C9DDD /* TransactionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionViewController.swift; sourceTree = "<group>"; };
 		E0A142D11CBD47C400C5AED7 /* bikeshare.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bikeshare.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0A142D41CBD47C400C5AED7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0A142D61CBD47C400C5AED7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -137,9 +137,9 @@
 				E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */,
 				E0697B221CDC3BAE00FFEEEA /* ProfileViewController.swift */,
 				E08F0B5B1CE4105F002C9DDD /* FilterViewController.swift */,
-				E08F0B5D1CE4F184002C9DDD /* InfoWindow.xib */,
-				E08F0B5F1CE4F1DD002C9DDD /* CustomInfoWindow.swift */,
 				E08F0B611CE4F94A002C9DDD /* BikeInfoViewController.swift */,
+				E08F0B631CE549A0002C9DDD /* MessageViewController.swift */,
+				E08F0B651CE585F0002C9DDD /* TransactionViewController.swift */,
 			);
 			path = bikeshare;
 			sourceTree = "<group>";
@@ -240,7 +240,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0A142F51CBD48A700C5AED7 /* Podfile in Resources */,
-				E08F0B5E1CE4F184002C9DDD /* InfoWindow.xib in Resources */,
 				E0A142DF1CBD47C400C5AED7 /* LaunchScreen.storyboard in Resources */,
 				E0A142DC1CBD47C400C5AED7 /* Assets.xcassets in Resources */,
 				E0A142DA1CBD47C400C5AED7 /* Main.storyboard in Resources */,
@@ -316,9 +315,10 @@
 				E08F0B621CE4F94A002C9DDD /* BikeInfoViewController.swift in Sources */,
 				E0697B211CDC3BA200FFEEEA /* BikesViewController.swift in Sources */,
 				E0697B1D1CDC3B8200FFEEEA /* DashboardViewController.swift in Sources */,
+				E08F0B661CE585F0002C9DDD /* TransactionViewController.swift in Sources */,
+				E08F0B641CE549A0002C9DDD /* MessageViewController.swift in Sources */,
 				E0E74FC41CC2CD48001B88E1 /* SignUpViewController.swift in Sources */,
 				E0697B231CDC3BAE00FFEEEA /* ProfileViewController.swift in Sources */,
-				E08F0B601CE4F1DD002C9DDD /* CustomInfoWindow.swift in Sources */,
 				E0A142D51CBD47C400C5AED7 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
