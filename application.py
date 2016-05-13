@@ -66,6 +66,10 @@ def teardown_request(exception):
     except Exception as e:
         pass
 
+@application.route('/')
+def index():
+    return "Ready!"
+
 ######## User ########
 @application.route('/login')
 def login():  # test view
