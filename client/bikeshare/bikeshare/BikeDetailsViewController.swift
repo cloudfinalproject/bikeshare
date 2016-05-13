@@ -10,7 +10,7 @@ import UIKit
 
 
 
-class BikeDetailsViewController: UIViewController {
+class BikeDetailsViewController: UIViewController,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     
     @IBOutlet weak var bikeModelField: UITextField!
@@ -24,6 +24,127 @@ class BikeDetailsViewController: UIViewController {
     @IBOutlet weak var detailsFiled: UITextView!
     
     
+    @IBOutlet weak var imageView: UIImageView!
+    
+     let imagePicker = UIImagePickerController()
+    
+    @IBAction func selectPhoto(sender: AnyObject) {
+        imagePicker.allowsEditing = false
+        imagePicker.sourceType = .PhotoLibrary
+        
+        presentViewController(imagePicker, animated: true, completion: nil)
+    }
+    
+
+    
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            imageView.contentMode = .ScaleAspectFit
+            imageView.image = pickedImage
+            
+            
+        }
+        
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    
+    func UploadRequest()
+    {
+        let temp_bid = self.currentBike!["bid"]! as! Int
+        let url = NSURL(string: serverDomain + "/upload/" + String(temp_bid))
+        
+        let request = NSMutableURLRequest(URL: url!)
+        request.HTTPMethod = "POST"
+        
+        let boundary = generateBoundaryString()
+        
+        //define the multipart request type
+        
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+        
+        if (imageView.image == nil)
+        {
+            return
+        }
+        
+        let image_data = UIImagePNGRepresentation(imageView.image!)
+        
+        
+        if(image_data == nil)
+        {
+            return
+        }
+        
+        
+        let body = NSMutableData()
+        
+        let fname = "photo_" + String(temp_bid) + ".jpg"
+        let mimetype = "image/jpeg"
+        
+        //define the data post parameter
+        
+        body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("Content-Disposition:form-data; name=\"test\"\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("hi\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        
+        
+        body.appendData("--\(boundary)\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("Content-Disposition:form-data; name=\"file\"; filename=\"\(fname)\"\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData("Content-Type: \(mimetype)\r\n\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        body.appendData(image_data!)
+        body.appendData("\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        
+        body.appendData("--\(boundary)--\r\n".dataUsingEncoding(NSUTF8StringEncoding)!)
+        
+        
+        
+        request.HTTPBody = body
+        
+        
+        
+        let session = NSURLSession.sharedSession()
+        
+        
+        let task = session.dataTaskWithRequest(request) {
+            (
+            let data, let response, let error) in
+            
+            guard let _:NSData = data, let _:NSURLResponse = response  where error == nil else {
+                print("error")
+                return
+            }
+            
+            let dataString = NSString(data: data!, encoding: NSUTF8StringEncoding)
+            print(dataString)
+            
+            dispatch_async(dispatch_get_main_queue()) {
+                self.navigationController?.popViewControllerAnimated(true)
+            }
+        }
+        
+        task.resume()
+        
+        
+    }
+    
+    
+    func generateBoundaryString() -> String
+    {
+        return "Boundary-\(NSUUID().UUIDString)"
+    }
+    
+
+    
+
+    
+    
     var currentBike : Dictionary<String, AnyObject>?
     var lat: Float?
     var lng: Float?
@@ -33,6 +154,7 @@ class BikeDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        imagePicker.delegate = self
         // Do any additional setup after loading the view.
         
         if (currentBike?.count != 0){
@@ -86,6 +208,21 @@ class BikeDetailsViewController: UIViewController {
                     //sign up successfully
                     //all ui change must happen in main thread. I think the issue is that async http request is in different thread.
                     //so use this method to push code back to main thread
+                    if let result = data{
+                        print(NSString(data: result, encoding: NSUTF8StringEncoding))
+                        do {
+                            let jsonResult = try NSJSONSerialization.JSONObjectWithData(result, options: .AllowFragments)
+                            dispatch_async(dispatch_get_main_queue()) {
+                                self.currentBike!["bid"] = jsonResult["result"]!!["bid"]
+                                self.UploadRequest()
+                            }
+                        } catch {
+                            print("error serializing JSON: \(error)")
+                        }
+                    }
+                    
+                    
+                    
                     print("Saved!!!!!")
                 }
             } else {
@@ -130,6 +267,7 @@ class BikeDetailsViewController: UIViewController {
                     //sign up successfully
                     //all ui change must happen in main thread. I think the issue is that async http request is in different thread.
                     //so use this method to push code back to main thread
+                    self.UploadRequest()
                     print("Saved!!!!!")
                 }
             } else {

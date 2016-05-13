@@ -31,9 +31,10 @@ class BikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     
 
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(true)
         // It is possible to do the following three things in the Interface Builder
         // rather than in code if you prefer.
 
