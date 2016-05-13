@@ -120,6 +120,12 @@ class BikesViewController: UIViewController, UITableViewDelegate, UITableViewDat
     }
     
     
+    @IBAction func addBike(sender: AnyObject) {
+        
+        self.currentBike = [:]
+        self.performSegueWithIdentifier("goto_bikeDetails", sender: self)
+        
+    }
 
 
     override func didReceiveMemoryWarning() {
