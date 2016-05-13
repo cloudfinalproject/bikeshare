@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		456834C5B8AFAECC3F17503E /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D35D02F31B112E7A2C32BA37 /* libPods.a */; };
+		49C9956B1CE4EF0A00DF4431 /* BikeDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49C9956A1CE4EF0A00DF4431 /* BikeDetailsViewController.swift */; };
 		E0697B1D1CDC3B8200FFEEEA /* DashboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B1C1CDC3B8200FFEEEA /* DashboardViewController.swift */; };
 		E0697B1F1CDC3B9300FFEEEA /* MessagesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B1E1CDC3B9300FFEEEA /* MessagesViewController.swift */; };
 		E0697B211CDC3BA200FFEEEA /* BikesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		49C9956A1CE4EF0A00DF4431 /* BikeDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BikeDetailsViewController.swift; sourceTree = "<group>"; };
 		582E3FE7CCFCEE6EA69EB512 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		8D8B0574F5FFB9686D77A9D5 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		D35D02F31B112E7A2C32BA37 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -134,12 +136,14 @@
 				E0E74FC31CC2CD48001B88E1 /* SignUpViewController.swift */,
 				E0697B1C1CDC3B8200FFEEEA /* DashboardViewController.swift */,
 				E0697B1E1CDC3B9300FFEEEA /* MessagesViewController.swift */,
-				E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */,
 				E0697B221CDC3BAE00FFEEEA /* ProfileViewController.swift */,
 				E08F0B5B1CE4105F002C9DDD /* FilterViewController.swift */,
 				E08F0B611CE4F94A002C9DDD /* BikeInfoViewController.swift */,
 				E08F0B631CE549A0002C9DDD /* MessageViewController.swift */,
 				E08F0B651CE585F0002C9DDD /* TransactionViewController.swift */,
+				E0697B201CDC3BA200FFEEEA /* BikesViewController.swift */,
+				49C9956A1CE4EF0A00DF4431 /* BikeDetailsViewController.swift */,
+
 			);
 			path = bikeshare;
 			sourceTree = "<group>";
@@ -310,6 +314,7 @@
 			files = (
 				E0697B1F1CDC3B9300FFEEEA /* MessagesViewController.swift in Sources */,
 				E0BFE4461CC2C4C100F803D4 /* LoginViewController.swift in Sources */,
+				49C9956B1CE4EF0A00DF4431 /* BikeDetailsViewController.swift in Sources */,
 				E0A142D71CBD47C400C5AED7 /* ViewController.swift in Sources */,
 				E08F0B5C1CE4105F002C9DDD /* FilterViewController.swift in Sources */,
 				E08F0B621CE4F94A002C9DDD /* BikeInfoViewController.swift in Sources */,
