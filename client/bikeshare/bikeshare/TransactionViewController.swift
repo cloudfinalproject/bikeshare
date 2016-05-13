@@ -10,7 +10,6 @@ import UIKit
 
 class TransactionViewController: UIViewController {
 
-    @IBOutlet weak var completeBtn: UIButton!
     @IBOutlet weak var modelLabel: UILabel!
     @IBOutlet weak var priceLabel: UILabel!
     @IBOutlet weak var statusLabel: UILabel!
@@ -41,10 +40,7 @@ class TransactionViewController: UIViewController {
         self.toLabel.text = self.transction!["to_date"]!! as? String
         self.statusLabel.text = self.transction!["status"] as? String
         self.priceLabel.text = String(self.transction!["unitprice"]!! as! Double)
-        let status = self.transction!["status"] as? String
-        if status != "approved" {
-            completeBtn.hidden = true
-        }
+
     }
     
     @IBAction func onCompleteTapped(sender: AnyObject) {

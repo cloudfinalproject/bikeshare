@@ -32,15 +32,10 @@ class FilterViewController: UIViewController {
     }
 
     override func viewWillAppear(animated: Bool) {
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy HH:mm"
-        var strDate = dateFormatter.stringFromDate(fromDate)
-        self.fromDateLabel.text = strDate
+        self.fromDateLabel.text = self.processDateToString(fromDate)
         self.fromDatePicker.date = fromDate
-        strDate = dateFormatter.stringFromDate(toDate)
-        self.toDateLabel.text = strDate
+        self.toDateLabel.text = self.processDateToString(toDate)
         self.toDatePicker.date = toDate
-
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,11 +61,8 @@ class FilterViewController: UIViewController {
             fromDatePicker.date = fromDate
             return
         }
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy HH:mm"
-        let strDate = dateFormatter.stringFromDate(fromDatePicker.date)
         self.fromDate = fromDatePicker.date
-        self.fromDateLabel.text = strDate
+        self.fromDateLabel.text = self.processDateToString(self.fromDate)
     }
 
     @IBAction func onToDateValueChanged(sender: UIDatePicker) {
@@ -79,11 +71,8 @@ class FilterViewController: UIViewController {
             toDatePicker.date = toDate
             return
         }
-        let dateFormatter = NSDateFormatter()
-        dateFormatter.dateFormat = "dd-MM-yyyy HH:mm"
-        let strDate = dateFormatter.stringFromDate(toDatePicker.date)
         self.toDate = toDatePicker.date
-        self.toDateLabel.text = strDate
+        self.toDateLabel.text = self.processDateToString(self.toDate)
     }
 
     func showAlert(){
@@ -95,6 +84,16 @@ class FilterViewController: UIViewController {
         //Present the AlertController
         self.presentViewController(actionSheetController, animated: true, completion: nil)
     }
+
+    private func processDateToString(date: NSDate) -> String{
+        let RFC3339DateFormatter = NSDateFormatter()
+        RFC3339DateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 14400)
+
+        return RFC3339DateFormatter.stringFromDate(date)
+    }
+    
     /*
     // MARK: - Navigation
 

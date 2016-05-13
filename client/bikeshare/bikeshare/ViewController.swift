@@ -17,6 +17,8 @@ class ViewController: UIViewController, UITabBarDelegate,
     //outlets
     @IBOutlet weak var gmsMapView: GMSMapView!
     @IBOutlet weak var tabBar: UITabBar!
+    @IBOutlet weak var fromDateLabel: UILabel!
+    @IBOutlet weak var toDateLabel: UILabel!
 
 
 
@@ -35,6 +37,8 @@ class ViewController: UIViewController, UITabBarDelegate,
         gmsMapView.delegate = self
         self.searchParams = SearchParams(lat: 0, lon: 0, distance: 15,
                                          from: NSDate(), to: NSDate().dateByAddingTimeInterval(21600))
+        self.fromDateLabel.text = self.processDateToString(NSDate())
+        self.toDateLabel.text = self.processDateToString(NSDate().dateByAddingTimeInterval(21600))
     }
 
     override func didReceiveMemoryWarning() {
@@ -60,17 +64,15 @@ class ViewController: UIViewController, UITabBarDelegate,
     private func processStartAndEndDate(data: String){
         let dates = data.componentsSeparatedByString("*")
         if var params = self.searchParams{
-
             let RFC3339DateFormatter = NSDateFormatter()
             RFC3339DateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
             RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
             RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 14400)
-
-
             params.from_date = RFC3339DateFormatter.dateFromString(dates[0])!
             params.to_date = RFC3339DateFormatter.dateFromString(dates[1])!
+            self.fromDateLabel.text = self.processDateToString(params.from_date)
+            self.toDateLabel.text = self.processDateToString(params.to_date)
         }
-
     }
 
     override func viewWillAppear(animated: Bool) {
@@ -167,6 +169,18 @@ class ViewController: UIViewController, UITabBarDelegate,
         print(url)
 
         let task = NSURLSession.sharedSession().dataTaskWithURL(url!) {(data, response, error) in
+
+            if let httpResponse = response as? NSHTTPURLResponse {
+                if(httpResponse.statusCode == 403){
+                    NSOperationQueue.mainQueue().addOperationWithBlock {
+                        self.performSegueWithIdentifier("goto_login", sender: self)
+                    }
+                    return
+                }
+            } else {
+                assertionFailure("unexpected response")
+            }
+
             if let bikes = data{
                 print(NSString(data: bikes, encoding: NSUTF8StringEncoding))
 
@@ -232,6 +246,15 @@ class ViewController: UIViewController, UITabBarDelegate,
             return
         }
 
+    }
+
+    private func processDateToString(date: NSDate) -> String{
+        let RFC3339DateFormatter = NSDateFormatter()
+        RFC3339DateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+        RFC3339DateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        RFC3339DateFormatter.timeZone = NSTimeZone(forSecondsFromGMT: 14400)
+
+        return RFC3339DateFormatter.stringFromDate(date)
     }
 
     //actions
