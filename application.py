@@ -146,13 +146,13 @@ def add_bike():
 def upload_view():  # test view
     return render_template("upload.html")
 
-@application.route('/upload', methods=['POST'])
-def upload():
+@application.route('/upload/<bid>', methods=['POST'])
+def upload(bid):
     if not session or 'uid' not in session:
         return abort(403)
     else:
         photo_file = request.files['file']
-        bid = request.form['bid']
+        bid = int(bid)
         if photo_file and allowed_file(photo_file.filename):
             filename = secure_filename(photo_file.filename)
             photo_file.save(os.path.join(application.config['UPLOAD_FOLDER'], filename))
