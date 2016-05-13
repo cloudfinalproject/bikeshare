@@ -9,7 +9,7 @@ class UserRequestAccess:
         self.conn = conn
         self.client = boto3.client('ses')
 
-    def get_requests(self, uid, request_status=False):
+    def get_requests(self, uid, request_status=False):  # get all requests from others
         output = {'result': {}, 'status': False, 'message': ''}
         requests = []
         status = False
@@ -18,7 +18,7 @@ class UserRequestAccess:
             query = 'SELECT r.* FROM requests r, bikes b WHERE r.bid = b.bid AND b.uid = ' + str(uid)
             if request_status:
                 query += ' AND r.status = ' + str(request_status)
-            query += ' ORDER BY r.rid'
+            query += ' ORDER BY r.rid desc'
             cursor = self.conn.execute(query)
 
             for row in cursor:
@@ -41,6 +41,49 @@ class UserRequestAccess:
             status = True
             message = "You have got all the requests successfully."
              
+        except Exception, e:
+            status = False
+            message = e
+            raise e
+
+        finally:
+            output['status'] = status
+            output['message'] = message
+            output['result'] = requests
+            return output
+
+    def get_my_requests(self, uid, request_status=False):  # get all requests from others
+        output = {'result': {}, 'status': False, 'message': ''}
+        requests = []
+        status = False
+        message = ''
+        try:
+            query = 'SELECT r.* FROM requests r, bikes b WHERE r.bid = b.bid AND r.uid = ' + str(uid)
+            if request_status:
+                query += ' AND r.status = ' + str(request_status)
+            query += ' ORDER BY r.rid desc'
+            cursor = self.conn.execute(query)
+
+            for row in cursor:
+                r = dict(row)
+
+                bid = r['bid']
+                bda = BikeDataAccess(self.conn)
+                bike = bda.get_bike(bid)
+                r['bike'] = bike['result']
+
+                uid = r['uid']
+                uda = UserDataAccess(self.conn)
+                user = uda.get_user(uid)
+                r['user'] = user['result']['user']
+
+                requests.append(r)
+
+            cursor.close()
+
+            status = True
+            message = "You have got all the requests successfully."
+
         except Exception, e:
             status = False
             message = e

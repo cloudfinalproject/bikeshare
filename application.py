@@ -324,6 +324,17 @@ def get_requests():
 
         return jsonify(output)
 
+@application.route('/getMyRequests')
+def get_my_requests():
+    if not session or 'uid' not in session:
+        return abort(403)
+    else:
+        ura = UserRequestAccess(g.conn)
+        user_id = session['uid']
+        output = ura.get_my_requests(user_id)
+
+        return jsonify(output)
+
 @application.route('/getRequest/<rid>')
 def get_request(rid):
     if not session or 'uid' not in session:
