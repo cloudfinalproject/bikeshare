@@ -39,6 +39,8 @@ class ViewController: UIViewController, UITabBarDelegate,
                                          from: NSDate(), to: NSDate().dateByAddingTimeInterval(21600))
         self.fromDateLabel.text = self.processDateToString(NSDate())
         self.toDateLabel.text = self.processDateToString(NSDate().dateByAddingTimeInterval(21600))
+        googleMapSettings()
+        getCurrentLocation()
     }
 
     override func didReceiveMemoryWarning() {
@@ -86,8 +88,7 @@ class ViewController: UIViewController, UITabBarDelegate,
         if (!isLoggedIn) {
             self.performSegueWithIdentifier("goto_login", sender: self)
         } else {
-            googleMapSettings()
-            getCurrentLocation()
+            self.renderBikesByMarkerLocation()
         }
 
     }
@@ -265,6 +266,7 @@ class ViewController: UIViewController, UITabBarDelegate,
     func didTapMyLocationButtonForMapView(mapView: GMSMapView) -> Bool {
         // reset marker:
         showFilterMarker(self.gmsMapView.myLocation!.coordinate)
+        self.renderBikesByMarkerLocation()
         return false
     }
 
