@@ -37,6 +37,10 @@ class UserRequestAccess:
 
             cursor.close()
 
+            # hack: should append all my requests as well
+            my_requests = self.get_my_requests(uid)['result']
+            requests = requests + my_requests
+
             status = True
             message = "You have got all the requests successfully."
              
